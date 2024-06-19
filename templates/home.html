@@ -52,6 +52,8 @@ body {
   color: #999;
 }
 </style>
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
 </head>
 <body>
 
@@ -62,7 +64,7 @@ body {
 
 <div class="container">
     <style>
-    input[type=text], select {
+    input[type=text], select,input[type=password] {
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;
@@ -94,15 +96,44 @@ body {
     }
     </style>
 
-    <form id="post-form" method="POST" action="{% url 'checkroom' %}">
+    <form id="post-form">
         {% csrf_token %}
         <label>Room Name</label>
         <input type="text" name="room_name" id="room_name" width="100px" />
         <label>Username</label>
         <input type="text" name="username" id="username" width="100px" />
+        <label>Password</label>
+        <input type="password" name="password" id="password" width="100px" />
         <input type="submit" value="Enter Room">
     </form>
 </div>
+<script type="text/javascript">
+  $(document).on('submit', '#post-form', function(e){
+    e.preventDefault();
+
+    $.ajax({
+      type: 'POST',
+      url: '/checkroom',
+      data: {
+        username: $('#username').val(),
+        room_name: $('#room_name').val(),
+        password: $('#password').val(),
+        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+      },
+      success: function(data){
+        if (data.success) {
+          window.location.href = data.redirect_url;
+        } else {
+          alert('An error occurred: ' + data.error);
+        }
+      },
+      error: function(jqXHR, textStatus, errorThrown){
+        alert('Invalid Password: ' + textStatus + ' - ' + errorThrown);
+      }
+    });
+    document.getElementById('message').value = '';
+  });
+</script>
 
 
 </body>
