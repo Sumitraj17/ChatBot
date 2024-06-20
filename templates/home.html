@@ -7,6 +7,10 @@ body {
   margin: 0 auto;
   max-width: 800px;
   padding: 0 20px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center
 }
 
 .container {
@@ -51,13 +55,17 @@ body {
   float: left;
   color: #999;
 }
+#title{
+  background-color:white;
+  font-size:2rem;
+}
 </style>
 <script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
 
 </head>
 <body>
 
-<div align="center">
+<div align="center" id='title'>
     <h2>Django Chat</h2>
 </div>
 

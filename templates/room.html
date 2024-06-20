@@ -5,8 +5,12 @@
 <style>
 body {
   margin: 0 auto;
-  max-width: 800px;
+  width: 100%;
   padding: 0 20px;
+  display:flex;
+  flex-direction: column; 
+  justify-content:center;
+  align-items:center; 
 }
 
 .container {
@@ -15,11 +19,13 @@ body {
   border-radius: 5px;
   padding: 10px;
   margin: 10px 0;
+  width:50%;
 }
 
 .darker {
   border-color: #ccc;
-  background-color: #ddd;
+  background-color: white;
+  width:75%;
 }
 
 .container::after {
@@ -51,12 +57,24 @@ body {
   float: left;
   color: #999;
 }
+#title{
+  width:50%; 
+  background-color:white;
+  font-size:1.5rem;
+}
+#display{
+  width:50%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+}
 </style>
 <script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
 </head>
 <body>
 
-<h2>{{room}} - DjChat</h2>
+<div align="center" id='title'><h1>{{room}}</h1></div>
 
 <div id="display">
 
