@@ -11,10 +11,8 @@
 
         #title {
             text-align: center;
-            {% comment %} background-color: #ffffff; {% endcomment %}
             padding: 10px;
             margin-bottom: 20px;
-            {% comment %} border: 2px solid #dedede; {% endcomment %}
             border-radius: 5px;
             width: 50%;
             margin: 0 auto;
@@ -23,10 +21,16 @@
         #display {
             width: 50%;
             margin: 0 auto;
-            display:flex;
-            flex-direction:column;
-            justify-content: flex-end;
-            align-items:end;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            max-height: 300px; /* Set a maximum height */
+            overflow-y: scroll; /* Enable vertical scrolling */
+            background-color: #ffffff;
+            padding: 10px;
+            border: 2px solid #dedede;
+            border-radius: 5px;
         }
 
         .container {
@@ -35,14 +39,14 @@
             border-radius: 10px;
             padding: 10px;
             margin: 10px 0;
-            width: 75%;
+            width: 100%;
             position: relative;
         }
 
         .container.darker {
             background-color: #ffffff;
             border-color: #ccc;
-            width:50%;
+            width: 75%; /* Ensure it matches the parent width */
         }
 
         .container::after {
@@ -139,16 +143,27 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
+        var userScrolled = false;
+
+        $('#display').on('scroll', function() {
+            userScrolled = true;
+        });
+
         setInterval(function() {
             $.ajax({
                 type: 'GET',
                 url: "/getMessages/{{ room }}",
                 success: function(response) {
-                    $("#display").empty();
+                    var display = $("#display");
+                    display.empty();
                     for (var key in response.messages) {
-                      var date = response.messages[key].date.split('T')[0];
-                        var temp = "<div class='container darker'><b>" + response.messages[key].user + "</b><p>" + response.messages[key].value + "</p><span class='time-left'>" +date + "</span></div>";
-                        $("#display").append(temp);
+                        var date = response.messages[key].date.split('T')[0];
+                        var temp = "<div class='container darker'><b>" + response.messages[key].user + "</b><p>" + response.messages[key].value + "</p><span class='time-left'>" + date + "</span></div>";
+                        display.append(temp);
+                    }
+                    if (!userScrolled) {
+                        // Scroll to the bottom of the display div if the user hasn't scrolled up
+                        display.scrollTop(display[0].scrollHeight);
                     }
                 },
                 error: function(response) {
@@ -156,26 +171,27 @@
                 }
             });
         }, 1000);
-    });
 
-    $(document).on('submit', '#post-form', function(e) {
-        e.preventDefault();
+        $(document).on('submit', '#post-form', function(e) {
+            e.preventDefault();
+            userScrolled = false; // Reset the scroll check on new message send
 
-        $.ajax({
-            type: 'POST',
-            url: '/send',
-            data: {
-                username: $('#username').val(),
-                room_id: $('#room_id').val(),
-                message: $('#message').val(),
-                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-            },
-            success: function(data) {
-                // Optionally handle success response
-            }
+            $.ajax({
+                type: 'POST',
+                url: '/send',
+                data: {
+                    username: $('#username').val(),
+                    room_id: $('#room_id').val(),
+                    message: $('#message').val(),
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                },
+                success: function(data) {
+                    // Optionally handle success response
+                }
+            });
+
+            $('#message').val('');
         });
-
-        $('#message').val('');
     });
 </script>
 
